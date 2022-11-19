@@ -1,0 +1,284 @@
+#1
+// Fibonacci Series using Recursion
+#include <bits/stdc++.h>
+using namespace std;
+
+int fib(int n)
+{
+	if (n <= 1)
+		return n;
+	return fib(n - 1) + fib(n - 2);
+}
+
+int main()
+{
+	int n;
+	cin>>n;
+	cout << fib(n);
+	getchar();
+	return 0;
+}
+
+
+// Fibonacci Series using Space Optimized Method
+#include<bits/stdc++.h>
+using namespace std;
+
+int fib(int n)
+{
+	int a = 0, b = 1, c;
+	if( n == 0)
+		return a;
+	for(int i = 2; i <= n; i++)
+	{
+	c = a + b;
+	a = b;
+	b = c;
+	}
+	return b;
+}
+
+// Driver code
+int main()
+{
+	int n ;
+	cin>>n;
+	
+	cout << fib(n);
+	return 0;
+}
+
+#3
+// C++ program to solve fractional Knapsack Problem
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for an item which stores weight and
+// corresponding value of Item
+struct Item {
+	int value, weight;
+
+	// Constructor
+	Item(int value, int weight)
+	{
+		this->value = value;
+		this->weight = weight;
+	}
+};
+
+// Comparison function to sort Item
+// according to val/weight ratio
+bool cmp(struct Item a, struct Item b)
+{
+	double r1 = (double)a.value / (double)a.weight;
+	double r2 = (double)b.value / (double)b.weight;
+	return r1 > r2;
+}
+
+// Main greedy function to solve problem
+double fractionalKnapsack(int W, struct Item arr[], int N)
+{
+	// Sorting Item on basis of ratio
+	sort(arr, arr + N, cmp);
+
+	double finalvalue = 0.0;
+
+	// Looping through all items
+	for (int i = 0; i < N; i++) {
+		
+		// If adding Item won't overflow,
+		// add it completely
+		if (arr[i].weight <= W) {
+			W -= arr[i].weight;
+			finalvalue += arr[i].value;
+		}
+
+		// If we can't add current Item,
+		// add fractional part of it
+		else {
+			finalvalue
+				+= arr[i].value
+				* ((double)W / (double)arr[i].weight);
+			break;
+		}
+	}
+
+	// Returning final value
+	return finalvalue;
+}
+
+// Driver code
+int main()
+{
+	int W = 50;
+	Item arr[] = { { 60, 10 }, { 100, 20 }, { 120, 30 } };
+
+	int N = sizeof(arr) / sizeof(arr[0]);
+
+	// Function call
+	cout << fractionalKnapsack(W, arr, N);
+	return 0;
+}
+
+#4
+/* A Naive recursive implementation of
+0-1 Knapsack problem */
+#include <bits/stdc++.h>
+using namespace std;
+
+// A utility function that returns
+// maximum of two integers
+int max(int a, int b) { return (a > b) ? a : b; }
+
+// Returns the maximum value that
+// can be put in a knapsack of capacity W
+int knapSack(int W, int wt[], int val[], int n)
+{
+
+	// Base Case
+	if (n == 0 || W == 0)
+		return 0;
+
+	// If weight of the nth item is more
+	// than Knapsack capacity W, then
+	// this item cannot be included
+	// in the optimal solution
+	if (wt[n - 1] > W)
+		return knapSack(W, wt, val, n - 1);
+
+	// Return the maximum of two cases:
+	// (1) nth item included
+	// (2) not included
+	else
+		return max(
+			val[n - 1]
+				+ knapSack(W - wt[n - 1],
+						wt, val, n - 1),
+			knapSack(W, wt, val, n - 1));
+}
+
+// Driver code
+int main()
+{
+	int val[] = { 60, 100, 120 };
+	int wt[] = { 10, 20, 30 };
+	int W = 50;
+	int n = sizeof(val) / sizeof(val[0]);
+	cout << knapSack(W, wt, val, n);
+	return 0;
+}
+
+#5
+/* C++ program to solve N Queen Problem using
+backtracking */
+
+#include <bits/stdc++.h>
+#define N 4
+using namespace std;
+
+/* A utility function to print solution */
+void printSolution(int board[N][N])
+{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++)
+			cout << " " << board[i][j] << " ";
+		printf("\n");
+	}
+}
+
+/* A utility function to check if a queen can
+be placed on board[row][col]. Note that this
+function is called when "col" queens are
+already placed in columns from 0 to col -1.
+So we need to check only left side for
+attacking queens */
+bool isSafe(int board[N][N], int row, int col)
+{
+	int i, j;
+
+	/* Check this row on left side */
+	for (i = 0; i < col; i++)
+		if (board[row][i])
+			return false;
+
+	/* Check upper diagonal on left side */
+	for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+		if (board[i][j])
+			return false;
+
+	/* Check lower diagonal on left side */
+	for (i = row, j = col; j >= 0 && i < N; i++, j--)
+		if (board[i][j])
+			return false;
+
+	return true;
+}
+
+/* A recursive utility function to solve N
+Queen problem */
+bool solveNQUtil(int board[N][N], int col)
+{
+	/* base case: If all queens are placed
+	then return true */
+	if (col >= N)
+		return true;
+
+	/* Consider this column and try placing
+	this queen in all rows one by one */
+	for (int i = 0; i < N; i++) {
+		/* Check if the queen can be placed on
+		board[i][col] */
+		if (isSafe(board, i, col)) {
+			/* Place this queen in board[i][col] */
+			board[i][col] = 1;
+
+			/* recur to place rest of the queens */
+			if (solveNQUtil(board, col + 1))
+				return true;
+
+			/* If placing queen in board[i][col]
+			doesn't lead to a solution, then
+			remove queen from board[i][col] */
+			board[i][col] = 0; // BACKTRACK
+		}
+	}
+
+	/* If the queen cannot be placed in any row in
+		this column col then return false */
+	return false;
+}
+
+/* This function solves the N Queen problem using
+Backtracking. It mainly uses solveNQUtil() to
+solve the problem. It returns false if queens
+cannot be placed, otherwise, return true and
+prints placement of queens in the form of 1s.
+Please note that there may be more than one
+solutions, this function prints one of the
+feasible solutions.*/
+bool solveNQ()
+{
+	int board[N][N] = { { 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 } };
+
+	if (solveNQUtil(board, 0) == false) {
+		cout << "Solution does not exist";
+		return false;
+	}
+
+	printSolution(board);
+	return true;
+}
+
+// driver program to test above function
+int main()
+{
+	solveNQ();
+	return 0;
+}
+
+
+
